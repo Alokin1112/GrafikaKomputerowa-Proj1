@@ -17,8 +17,9 @@ def translate_figures(vector):
     for figure in figures:
         figure.translate(vector)
     
-    for points in figures[0].points:
-        print(points.get_vector())
+def rotate_figures(axis,angle):
+    for figure in figures:
+        figure.rotate(var.get_rotation_matrix(axis,angle))
 
 while True:
     for event in pygame.event.get():
@@ -38,6 +39,18 @@ while True:
                 translate_figures(np.array([0, 0, -var.DELTA_Z]))
             elif event.key == pygame.K_l:
                 translate_figures(np.array([0, 0, var.DELTA_Z]))
+            elif event.key ==pygame.K_q:
+                rotate_figures('x',var.DELTA_ANGLE_IN_DEGREES)
+            elif event.key ==pygame.K_w:
+                rotate_figures('x',-var.DELTA_ANGLE_IN_DEGREES)
+            elif event.key ==pygame.K_a:
+                rotate_figures('y',var.DELTA_ANGLE_IN_DEGREES)
+            elif event.key ==pygame.K_s:
+                rotate_figures('y',-var.DELTA_ANGLE_IN_DEGREES)
+            elif event.key ==pygame.K_z:
+                rotate_figures('z',var.DELTA_ANGLE_IN_DEGREES)
+            elif event.key ==pygame.K_x:
+                rotate_figures('z',-var.DELTA_ANGLE_IN_DEGREES)
 
     # Fill the window with white color
     window.fill(var.WHITE)

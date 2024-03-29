@@ -14,11 +14,34 @@ class Figure():
     for edge in self.edges:
       start = self.points[edge[0]]
       end = self.points[edge[1]]
-      pygame.draw.line(window, var.BLACK, start.get_projection(d), end.get_projection(d), 1)
+      (s,e)=get_line_points(start,end)
+      if s is not None and e is not None:
+        pygame.draw.line(window, var.BLACK, s.get_projection(d), e.get_projection(d), 1)
       
   def translate(self, vector):
     for point in self.points:
       point.translate(vector)
+
+  def rotate(self, transformation_matrix):
+    for point in self.points:
+      point.rotate(transformation_matrix)
+
+def get_line_points(start,end):
+  if start.z < 0 and end.z < 0:
+    return (None, None)
+  new_start=start
+  new_end = end
+  if start.z <0:
+    new_start = calculate_point_for_z_equal_zero(start, end)
+  if end.z < 0:
+    new_end = calculate_point_for_z_equal_zero(end, start)
+  return (new_start, new_end)
+
+
+def calculate_point_for_z_equal_zero(start, end):
+  new_x = (start.x*end.z - end.x*start.z)/(end.z-start.z)
+  new_y = (start.y*end.z - end.y*start.z)/(end.z-start.z)
+  return Point(new_x, new_y, 0)
 
 class Point():
   x = 0
@@ -35,7 +58,6 @@ class Point():
    
   def get_normalized_vector(self):
     return np.array([self.x, self.y, self.z, 1.0])
-
 
   def set_vector(self, vector):
     self.x = vector[0]
@@ -54,3 +76,6 @@ class Point():
   
   def translate(self, vector):
     self.set_vector(self.get_vector() + vector)
+  
+  def rotate(self,transformation_matrix):
+    self.set_normalized_vector(np.dot(transformation_matrix, self.get_normalized_vector()))
