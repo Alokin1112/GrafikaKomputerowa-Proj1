@@ -13,6 +13,8 @@ pygame.display.set_caption("Square Drawing")
 figures = read_figures("figures.txt")
 # Main loop
 
+zoom__counter = 0
+
 def translate_figures(vector):
     for figure in figures:
         figure.translate(vector)
@@ -20,6 +22,18 @@ def translate_figures(vector):
 def rotate_figures(axis,angle):
     for figure in figures:
         figure.rotate(var.get_rotation_matrix(axis,angle))
+
+def zoom_figures(factor):
+    global zoom__counter
+    if factor > 1:
+        zoom__counter += 1
+    if factor < 1:
+        if zoom__counter > 0:
+            zoom__counter -= 1
+        else:
+            return
+    for figure in figures:
+        figure.zoom(factor)
 
 while True:
     for event in pygame.event.get():
@@ -51,6 +65,10 @@ while True:
                 rotate_figures('z',var.DELTA_ANGLE_IN_DEGREES)
             elif event.key ==pygame.K_x:
                 rotate_figures('z',-var.DELTA_ANGLE_IN_DEGREES)
+            elif event.key == pygame.K_i:
+                zoom_figures(var.ZOOM_IN_FACTOR)
+            elif event.key == pygame.K_o:
+                zoom_figures(var.ZOOM_OUT_FACTOR)
 
     # Fill the window with white color
     window.fill(var.WHITE)

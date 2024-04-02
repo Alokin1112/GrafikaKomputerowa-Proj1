@@ -26,6 +26,10 @@ class Figure():
     for point in self.points:
       point.rotate(transformation_matrix)
 
+  def zoom(self, factor):
+    for point in self.points:
+      point.zoom(factor)
+
 def get_line_points(start,end):
   if start.z < 0 and end.z < 0:
     return (None, None)
@@ -79,3 +83,7 @@ class Point():
   
   def rotate(self,transformation_matrix):
     self.set_normalized_vector(np.dot(transformation_matrix, self.get_normalized_vector()))
+  
+  def zoom(self,factor):
+    zoom_matrix = np.array([[factor,0,0,0],[0,factor,0,0],[0,0,factor,0],[0,0,0,1]])
+    self.set_normalized_vector(np.dot(zoom_matrix, self.get_normalized_vector()))

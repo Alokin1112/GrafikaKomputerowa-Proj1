@@ -10,6 +10,8 @@ DELTA_X = 25
 DELTA_Y = 25
 DELTA_Z = 25
 DELTA_ANGLE_IN_DEGREES =pi/12
+ZOOM_IN_FACTOR = 1.25
+ZOOM_OUT_FACTOR = 1/ZOOM_IN_FACTOR
 
 def centerize_point(point):
   new_x = point[0] + WINDOW_WIDTH/2
