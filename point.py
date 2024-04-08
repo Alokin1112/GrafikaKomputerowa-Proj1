@@ -51,6 +51,7 @@ class Point():
   x = 0
   y = 0
   z = 0
+  zoom_factor = 1
 
   def __init__(self, x, y, z):
     self.x = x
@@ -74,8 +75,8 @@ class Point():
     self.z = vector[2]
 
   def get_projection(self, d):
-    new_x = (self.x*d)/(self.z+d)
-    new_y = (self.y*d)/(self.z+d)
+    new_x = ((self.x*d)/(self.z+d))*self.zoom_factor
+    new_y = ((self.y*d)/(self.z+d))*self.zoom_factor
     return var.centerize_point(np.array([new_x, new_y]))
   
   def translate(self, vector):
@@ -85,5 +86,4 @@ class Point():
     self.set_normalized_vector(np.dot(transformation_matrix, self.get_normalized_vector()))
   
   def zoom(self,factor):
-    zoom_matrix = np.array([[factor,0,0,0],[0,factor,0,0],[0,0,factor,0],[0,0,0,1]])
-    self.set_normalized_vector(np.dot(zoom_matrix, self.get_normalized_vector()))
+    self.zoom_factor = factor
