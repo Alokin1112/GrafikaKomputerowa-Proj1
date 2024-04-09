@@ -4,19 +4,21 @@ import variables as var
 
 class Figure():
   points=[]
-  edges=[]#list of tuples
+  walls =[]
+  colors=[]
 
-  def __init__(self,points,edges):
+  def __init__(self,points,walls,colors):
     self.points = points
-    self.edges = edges
+    self.walls =walls
+    self.colors=colors
 
   def draw(self,window,d):
-    for edge in self.edges:
-      start = self.points[edge[0]]
-      end = self.points[edge[1]]
-      (s,e)=get_line_points(start,end)
-      if s is not None and e is not None:
-        pygame.draw.line(window, var.BLACK, s.get_projection(d), e.get_projection(d), 1)
+    for idx,wall in enumerate(self.walls):
+      prepared_wall = [self.points[x] for x in wall]
+      array_of_points=get_line_points(prepared_wall)
+      if not array_of_points is None:
+        projected_points = [point.get_projection(d) for point in array_of_points]
+        pygame.draw.polygon(window, self.colors[idx], projected_points)
       
   def translate(self, vector):
     for point in self.points:
@@ -30,16 +32,22 @@ class Figure():
     for point in self.points:
       point.zoom(factor)
 
-def get_line_points(start,end):
-  if start.z < 0 and end.z < 0:
-    return (None, None)
-  new_start=start
-  new_end = end
-  if start.z <0:
-    new_start = calculate_point_for_z_equal_zero(start, end)
-  if end.z < 0:
-    new_end = calculate_point_for_z_equal_zero(end, start)
-  return (new_start, new_end)
+def get_line_points(array_of_points):
+  if all(point.z < 0 for point in array_of_points):
+    return None
+  new_array_of_points = []
+  for i in range(len(array_of_points)):
+    if array_of_points[i].z < 0:
+      next_point = array_of_points[(i+1)%len(array_of_points)]
+      if next_point.z < 0:
+        next_point = array_of_points[(i+len(array_of_points)-1)%len(array_of_points)]
+        if next_point.z < 0:
+          continue
+      new_point_with_z_equal_zero = calculate_point_for_z_equal_zero(array_of_points[i], next_point)
+      new_array_of_points.append(new_point_with_z_equal_zero)
+    else:
+      new_array_of_points.append(array_of_points[i])
+  return new_array_of_points
 
 
 def calculate_point_for_z_equal_zero(start, end):
