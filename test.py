@@ -5,13 +5,15 @@ from point import Point, Figure
 import numpy as np
 from file_reader import read_figures
 pygame.init()
+from bsp_tree import build_bsp_tree,traverse_bsp_tree
 
 # Set up the window
 
 window = pygame.display.set_mode((var.WINDOW_WIDTH, var.WINDOW_HEIGHT))
 pygame.display.set_caption("Square Drawing")
+# figures =read_figures("planes.txt")
+# figures = read_figures("three-cubes.txt")
 figures = read_figures("figures.txt")
-# Main loop
 
 zoom__state=1
 
@@ -73,9 +75,13 @@ while True:
     # Fill the window with white color
     window.fill(var.WHITE)
 
+    polygons =[]
     for figure in figures:
-        figure.draw(window, var.D)
-
+        polygons.extend(figure.get_polygons())
+    bsp_tree = build_bsp_tree(polygons)
+    sorted_polygons = traverse_bsp_tree(bsp_tree, Point(0, 0, 0))
+    for polygon in sorted_polygons:
+        polygon.draw(window,var.D)
 
     # Update the display
     pygame.display.update()

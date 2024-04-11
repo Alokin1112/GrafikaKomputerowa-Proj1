@@ -13,11 +13,10 @@ def read_figures(file_name):
         x,y,z = points.split(',')
         points_array.append(Point(float(x),float(y),float(z)))
       walls_array=[]
-      colors_array=[]
       walls_list = points_and_edges[1].split('|')
       for wall in walls_list:
         walls_array.append([int(x) for x in wall.split(',')])
-        colors_array.append((random.randint(0,255),random.randint(0,255),random.randint(0,255)))
-      figures.append(Figure(points_array,walls_array,colors_array))
+      color =(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+      figures.append(Figure(points_array,walls_array,color))
   return figures
 

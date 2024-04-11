@@ -2,15 +2,36 @@ import numpy as np
 import pygame
 import variables as var
 
+class Polygon(): 
+  points=[]
+  color=(0,0,0)
+
+  def __init__(self,points,color):
+    self.points = points
+    self.color=color
+
+  def get_plane(self):
+    v1 = self.points[1].get_vector() - self.points[0].get_vector()
+    v2 = self.points[2].get_vector() - self.points[0].get_vector()
+    normal = np.cross(v1, v2)
+    d = -np.dot(normal, self.points[0].get_vector())
+    return np.array([normal, d])
+
+  def draw(self,window,d):
+    array_of_points=get_line_points(self.points)
+    if not array_of_points is None:
+      projected_points = [point.get_projection(d) for point in array_of_points]
+      pygame.draw.polygon(window, self.color, projected_points)
+
 class Figure():
   points=[]
   walls =[]
-  colors=[]
+  colors= (0,0,0)
 
-  def __init__(self,points,walls,colors):
+  def __init__(self,points,walls,color):
     self.points = points
     self.walls =walls
-    self.colors=colors
+    self.color=color
 
   def draw(self,window,d):
     for idx,wall in enumerate(self.walls):
@@ -18,8 +39,15 @@ class Figure():
       array_of_points=get_line_points(prepared_wall)
       if not array_of_points is None:
         projected_points = [point.get_projection(d) for point in array_of_points]
-        pygame.draw.polygon(window, self.colors[idx], projected_points)
+        pygame.draw.polygon(window, self.color, projected_points)
       
+  def get_polygons(self):
+    polygons = []
+    for wall in self.walls:
+      prepared_wall = [self.points[x] for x in wall]
+      polygons.append(Polygon(prepared_wall, self.color))
+    return polygons
+  
   def translate(self, vector):
     for point in self.points:
       point.translate(vector)
