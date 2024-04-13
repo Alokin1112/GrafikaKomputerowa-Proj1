@@ -12,8 +12,8 @@ from bsp_tree import build_bsp_tree,traverse_bsp_tree
 window = pygame.display.set_mode((var.WINDOW_WIDTH, var.WINDOW_HEIGHT))
 pygame.display.set_caption("Square Drawing")
 # figures =read_figures("planes.txt")
-# figures = read_figures("three-cubes.txt")
-figures = read_figures("figures.txt")
+# figures = read_figures("figures.txt")
+figures = read_figures("two-cubes.txt")
 
 zoom__state=1
 
